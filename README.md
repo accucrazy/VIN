@@ -49,7 +49,6 @@ The result is a local-first agent stack that can still plug into cloud services 
 - **Visible reasoning and tool traces** — the web UI shows the agent's reasoning, selected tool, provider, query, duration, and raw results.
 - **Memory and skills** — SQLite-backed hybrid keyword/vector memory plus progressive-disclosure skills.
 - **Security boundaries** — SSRF guard and untrusted-content wrappers live in code, not just prompts.
-- **Architecture recap deck included** — see [`architecture-recap-deck/`](architecture-recap-deck/) for the engineering narrative behind the harness.
 
 ## Quickstart
 
@@ -123,30 +122,9 @@ VIN/
   src/                         Core TypeScript agent harness
   web/                         Next.js chat UI wired to Ollama + web_search
   docs/                        Design notes, security notes, on-prem setup
-  architecture-recap-deck/      Slide deck explaining the harness architecture
   scripts/setup-models.sh       Ollama model pull helper
   docker-compose.yml            Local Ollama stack
 ```
-
-## Architecture Deck
-
-The included deck explains the engineering philosophy behind VIN:
-
-- Tool runtime and MCP boundaries
-- Session and tenant isolation
-- Context feeding
-- Memory lifecycle
-- Skill platform
-- Engineering discipline
-- Harness future work
-
-Open it locally:
-
-```bash
-open architecture-recap-deck/index.html
-```
-
-Or serve the repo and open `/architecture-recap-deck/`.
 
 ## What VIN Is Not
 
@@ -163,7 +141,7 @@ VIN builds on the open-source cut of **TPC-AIOS**, the agent harness behind The 
 - a standalone web UI,
 - pluggable search providers,
 - visible tool calls,
-- and an architecture deck for teams evaluating the design.
+- and documentation for teams evaluating the design.
 
 ## License
 

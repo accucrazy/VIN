@@ -41,7 +41,7 @@ VIN currently ships:
 - SQLite-backed memory,
 - browser-backed web search,
 - a standalone Next.js chat UI,
-- and the architecture recap deck.
+- and open-source positioning / setup documentation.
 
 The next logical open-source additions are:
 
