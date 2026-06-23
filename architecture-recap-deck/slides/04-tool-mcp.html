@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>P04 · Tool · MCP 正名</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  .head{flex:0 0 auto;margin-top:40px;}
+  .head .kicker{margin-bottom:22px;}
+  .head .title{margin-bottom:20px;}
+  .head .lead{max-width:1500px;}
+
+  .canvas{flex:1;display:flex;align-items:center;gap:0;margin:30px 0;}
+  .col{
+    flex:1;background:var(--card);border:1px solid var(--line);
+    padding:38px 40px;height:100%;display:flex;flex-direction:column;
+  }
+  .col.before{background:transparent;border-style:dashed;}
+  .col.after{background:var(--card);border-color:var(--line-2);}
+  .col .lbl{
+    font-family:var(--mono);font-size:17px;letter-spacing:0.16em;text-transform:uppercase;
+    font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:12px;
+  }
+  .col.before .lbl{color:var(--ink-faint);}
+  .col.after .lbl{color:var(--accent-ink);}
+  .col.after .lbl .sq{width:13px;height:13px;background:var(--accent);display:inline-block;}
+  .col h3{font-size:33px;font-weight:800;line-height:1.25;color:var(--ink);margin-bottom:18px;}
+  .col p{font-size:23px;line-height:1.6;color:var(--ink-soft);}
+  .col p b{color:var(--ink);font-weight:700;}
+  .col .code{
+    font-family:var(--mono);font-size:20px;color:var(--ink-faint);
+    background:var(--paper-2);padding:14px 18px;margin-top:auto;border-left:3px solid var(--line-2);
+  }
+  .col.after .code{border-left-color:var(--accent);color:var(--ink-soft);}
+  .col.after .code b{color:var(--accent-ink);}
+
+  .arrow{
+    flex:0 0 96px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:54px;color:var(--accent);font-weight:700;
+  }
+  .tags{display:flex;gap:10px;margin-top:16px;}
+  .tags .t{
+    font-family:var(--mono);font-size:17px;font-weight:700;letter-spacing:0.04em;
+    padding:7px 13px;border:1px solid var(--line-2);color:var(--ink);background:var(--paper);
+  }
+  .tags .t .k{color:var(--accent-ink);}
+
+  .ribbon{margin-bottom:22px;}
+  .note{margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="masthead">
+    <div class="mark"><span class="sq"></span>VIN · OPEN SOURCE AIOS</div>
+    <div class="meta">Tool 工具層 · Architecture Review</div>
+  </div>
+
+  <div class="head">
+    <div class="kicker"><span class="sq"></span>TOOL 工具層 <span class="idx">/ 01</span></div>
+    <h1 class="title">把「怪名字」正名成<span class="hl">清楚的工具契約</span></h1>
+    <p class="lead">
+      工具系統原本叫 <b>MCPTool</b>，但底下根本沒有真正的「外部工具協定」——名字和實作對不上，
+      導致「哪些是內建、哪些是外接」永遠講不清楚。這次把它<b>整庫正名為 AgentTool</b>。
+    </p>
+  </div>
+
+  <div class="canvas">
+    <div class="col before">
+      <div class="lbl">之前 · Before</div>
+      <h3>一個名字，兩種意思</h3>
+      <p>所有工具都叫 <b>MCPTool</b>，但其實是內建工具。想接真正的外部工具時，<b>邊界整個糊掉</b>——分不清來源、也分不清給誰用。</p>
+      <div class="code">tool: MCPTool  // 名實不符</div>
+    </div>
+
+    <div class="arrow">&#8594;</div>
+
+    <div class="col after">
+      <div class="lbl"><span class="sq"></span>之後 · After</div>
+      <h3>一個契約，兩個邊界</h3>
+      <p>工具本體統一叫 <b>AgentTool</b>（什麼是工具沒變）；另外用兩個標記講清楚<b>「從哪來、給誰用」</b>。</p>
+      <div class="tags">
+        <span class="t"><span class="k">source</span> = core / plugin / mcp</span>
+        <span class="t"><span class="k">exposure</span> = 給誰看得到</span>
+      </div>
+      <div class="code">tool: <b>AgentTool</b>  // 來源 × 用途 正交</div>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <span class="tag">為什麼重要</span>
+    <span class="val">消除「內建 vs 外接」的邊界混淆，替日後真正接上外部工具<span class="hl">鋪好乾淨的地基</span>——而且不動到任何現有執行路徑。</span>
+  </div>
+
+  <div class="note">
+    技術細節 · <b>PR #20</b> 以 codemod 完成 108 檔真實 rename（非加 alias）；<b>source 不進 LLM schema、不污染 prompt cache</b>；
+    註冊時強制 <b>isMcpToolName ⟺ source==='mcp'</b> 雙向不變式。
+  </div>
+
+  <div class="footer">
+    <span>Tool · MCP Naming &amp; Boundaries</span>
+    <span class="pageno">04 / 17 &nbsp;·&nbsp; <b>TOOL</b></span>
+  </div>
+</div>
+</body>
+</html>

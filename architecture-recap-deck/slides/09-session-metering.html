@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>P09 · Session · 計量與配額</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  .head{flex:0 0 auto;margin-top:38px;}
+  .head .kicker{margin-bottom:22px;}
+  .head .title{margin-bottom:20px;}
+
+  .canvas{flex:1;display:flex;gap:28px;margin:28px 0;}
+  .gates{flex:1.35;display:flex;flex-direction:column;gap:18px;}
+  .gate{
+    flex:1;border:1px solid var(--line-2);background:var(--card);
+    padding:28px 34px;display:flex;align-items:center;gap:28px;
+  }
+  .gate .layer{
+    font-family:var(--mono);font-size:16px;letter-spacing:0.1em;font-weight:700;color:var(--accent);
+    flex:0 0 90px;border-right:1px solid var(--line);padding-right:22px;
+  }
+  .gate .bd .t{font-size:30px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+  .gate .bd .d{font-size:21px;color:var(--ink-soft);line-height:1.5;}
+  .gate .bd .d b{color:var(--ink);font-weight:700;}
+
+  .panel{
+    flex:1;background:var(--ink);color:var(--paper);padding:34px 36px;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .panel .cap{font-family:var(--mono);font-size:16px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:22px;}
+  .panel .stat{margin-bottom:26px;}
+  .panel .stat:last-child{margin-bottom:0;}
+  .panel .stat .num{font-size:62px;font-weight:900;line-height:1;letter-spacing:-0.02em;}
+  .panel .stat .num .u{font-size:28px;font-weight:700;color:#F3B59E;margin-left:6px;}
+  .panel .stat .lab{font-size:18px;color:rgba(245,243,238,0.7);margin-top:8px;}
+
+  .ribbon{margin-bottom:22px;}
+  .note{margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="masthead">
+    <div class="mark"><span class="sq"></span>VIN · OPEN SOURCE AIOS</div>
+    <div class="meta">Session 工作階段 · Architecture Review</div>
+  </div>
+
+  <div class="head">
+    <div class="kicker"><span class="sq"></span>SESSION 工作階段 <span class="idx">/ 02</span></div>
+    <h1 class="title">每一輪都<span class="hl">記帳</span>，可以設<span class="hl">每月上限</span></h1>
+    <p class="lead">為日後的計費與企業配額，鋪好<b>兩層關卡</b>：先把每一輪的用量記下來，再依帳號設上限。</p>
+  </div>
+
+  <div class="canvas">
+    <div class="gates">
+      <div class="gate">
+        <div class="layer">第一層<br>計量</div>
+        <div class="bd">
+          <div class="t">每一輪都記一筆</div>
+          <div class="d">AI 每跑完一輪，就記下<b>用了多少 token、花了多少錢</b>，連多代理的子任務也合併計入。</div>
+        </div>
+      </div>
+      <div class="gate">
+        <div class="layer">第二層<br>配額</div>
+        <div class="bd">
+          <div class="t">依帳號設上限</div>
+          <div class="d">可對每個帳號設<b>每日／每週／每月／永久</b>上限，超過就擋下並回報原因。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="cap">上線後實測</div>
+      <div class="stat">
+        <div class="num">207<span class="u">K</span></div>
+        <div class="lab">已逐輪計入的 token 用量</div>
+      </div>
+      <div class="stat">
+        <div class="num">$0.074</div>
+        <div class="lab">對應成本，帳目對得起來</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <span class="tag">為什麼重要</span>
+    <span class="val">這是<span class="hl">商業化的完整地基</span>（SaaS 計費、企業配額）；目前預設不擋，<span class="hl">逐帳號設上限才啟用</span>，安全上線。</span>
+  </div>
+
+  <div class="note">
+    技術細節 · <b>PR #11–#14</b>，新增 token_usage／user_quota 兩張表；用量以 reserve → 即時回填 → finalize，<b>不靠 session.totalTokens</b>（會漏記）；
+    配額月窗以 Asia/Taipei 計、入口 429／drain 503 區分。
+  </div>
+
+  <div class="footer">
+    <span>Session · Metering &amp; Quota</span>
+    <span class="pageno">09 / 17 &nbsp;·&nbsp; <b>SESSION</b></span>
+  </div>
+</div>
+</body>
+</html>

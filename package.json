@@ -1,0 +1,38 @@
+{
+  "name": "vin",
+  "version": "0.1.0",
+  "description": "VIN — an on-premise-first multi-agent AIOS: local models, tool calling, memory, skills, web search, and a chat UI for Qwen / Nemotron / Gemma on Ollama or any OpenAI-compatible runtime.",
+  "license": "MIT",
+  "author": "Accucrazy <hello@accucrazy.com>",
+  "repository": { "type": "git", "url": "https://github.com/accucrazy/VIN.git" },
+  "homepage": "https://github.com/accucrazy/VIN#readme",
+  "keywords": [
+    "vin",
+    "ai-agent",
+    "multi-agent",
+    "on-premise",
+    "ollama",
+    "qwen",
+    "nemotron",
+    "gemma",
+    "vllm",
+    "react-loop",
+    "mcp",
+    "tool-calling",
+    "local-llm",
+    "self-hosted"
+  ],
+  "type": "module",
+  "private": false,
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0",
+    "json5": "^2.2.3",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^20.0.0"
+  }
+}

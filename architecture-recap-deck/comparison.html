@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>技術架構對照 · 徹頭徹尾的重構 — VIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F3EE; --paper-2:#ECE8DF; --card:#FBFAF6;
+    --ink:#1A1815; --ink-soft:#56524A; --ink-faint:#9C968B;
+    --accent:#D6451F; --accent-ink:#A8330F; --accent-wash:rgba(214,69,31,0.07);
+    --line:rgba(26,24,21,0.14); --line-2:rgba(26,24,21,0.28);
+    --sans:'Archivo','Helvetica Neue',Arial,'Noto Sans TC',sans-serif;
+    --zh:'Noto Sans TC','Archivo','Helvetica Neue',sans-serif;
+    --mono:'Space Mono','JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);color:var(--ink);font-family:var(--zh);
+    -webkit-font-smoothing:antialiased;line-height:1.6;
+    background-image:
+      linear-gradient(rgba(26,24,21,0.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(26,24,21,0.025) 1px,transparent 1px);
+    background-size:88px 88px;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:0 56px 120px;}
+
+  /* ---- masthead ---- */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:15px;letter-spacing:0.16em;text-transform:uppercase;
+    color:var(--ink-soft);padding:26px 0 20px;border-bottom:2px solid var(--ink);
+    position:sticky;top:0;background:var(--paper);z-index:20;
+  }
+  .topbar .mark{display:flex;align-items:center;gap:12px;color:var(--ink);font-weight:700;}
+  .topbar .mark .sq{width:12px;height:12px;background:var(--accent);}
+  .topbar .meta{color:var(--ink-faint);font-weight:400;}
+
+  /* ---- hero ---- */
+  .hero{padding:72px 0 56px;border-bottom:1px solid var(--line);}
+  .kicker{display:flex;align-items:center;gap:13px;font-family:var(--mono);font-size:16px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent-ink);font-weight:700;margin-bottom:28px;}
+  .kicker .sq{width:14px;height:14px;background:var(--accent);}
+  h1{font-family:var(--zh);font-weight:900;font-size:66px;line-height:1.08;letter-spacing:-0.02em;margin-bottom:30px;}
+  h1 .hl{color:var(--accent);}
+  .lede{font-size:23px;line-height:1.6;color:var(--ink-soft);max-width:980px;font-weight:500;}
+  .lede b{color:var(--ink);font-weight:700;}
+  .hero-meta{margin-top:34px;font-family:var(--mono);font-size:15px;color:var(--ink-faint);letter-spacing:0.04em;}
+
+  /* ---- section ---- */
+  section{padding:58px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:34px;}
+  .sec-no{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);}
+  h2{font-family:var(--zh);font-weight:900;font-size:38px;line-height:1.15;letter-spacing:-0.01em;}
+  .sec-sub{font-size:19px;color:var(--ink-soft);margin-top:-22px;margin-bottom:30px;max-width:980px;}
+
+  /* ---- thesis cards ---- */
+  .thesis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  .tcard{border:1px solid var(--line-2);background:var(--card);padding:30px 30px;}
+  .tcard.accent{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .tcard .n{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:0.1em;color:var(--accent-ink);}
+  .tcard.accent .n{color:var(--accent);}
+  .tcard h3{font-size:24px;font-weight:800;margin:12px 0 12px;line-height:1.25;}
+  .tcard p{font-size:18px;line-height:1.6;color:var(--ink-soft);}
+  .tcard.accent p{color:rgba(245,243,238,0.82);}
+  .tcard p b{color:var(--ink);font-weight:700;}
+  .tcard.accent p b{color:#F3B59E;}
+
+  /* ---- comparison table ---- */
+  table{width:100%;border-collapse:collapse;font-size:15.5px;}
+  thead th{
+    position:sticky;top:69px;background:var(--paper);z-index:10;
+    text-align:left;padding:16px 16px;border-bottom:2px solid var(--ink);
+    font-family:var(--mono);font-size:14px;letter-spacing:0.08em;text-transform:uppercase;vertical-align:bottom;
+  }
+  thead th .lang{display:block;font-size:12px;color:var(--ink-faint);font-weight:400;margin-top:4px;letter-spacing:0.04em;text-transform:none;}
+  thead th.dim{width:15%;color:var(--ink-faint);}
+  thead th.ref{width:27%;color:var(--ink-soft);}
+  thead th.ours{width:31%;color:var(--accent-ink);background:var(--accent-wash);border-bottom-color:var(--accent);}
+  tbody td{padding:16px 16px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5;}
+  tbody td.dim{font-weight:800;color:var(--ink);font-size:16px;}
+  tbody td.ref{color:var(--ink-soft);}
+  tbody td.ours{background:var(--accent-wash);color:var(--ink);font-weight:500;border-left:1px solid rgba(214,69,31,0.2);border-right:1px solid rgba(214,69,31,0.2);}
+  tbody td.ours b{color:var(--accent-ink);font-weight:800;}
+  tbody tr:last-child td.ours{border-bottom:2px solid var(--accent);}
+  .no{color:var(--ink-faint);font-family:var(--mono);font-size:13px;font-weight:700;}
+  .no::before{content:"✕ ";color:#B9534A;}
+  .yes{color:var(--accent-ink);font-weight:800;}
+
+  /* ---- deep dive ---- */
+  .dive{margin-bottom:36px;}
+  .dive:last-child{margin-bottom:0;}
+  .dive .tag{font-family:var(--mono);font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-ink);font-weight:700;margin-bottom:10px;}
+  .dive h3{font-size:27px;font-weight:800;margin-bottom:16px;line-height:1.25;}
+  .dive .body{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line-2);}
+  .dive .side{padding:24px 28px;}
+  .dive .side.them{background:transparent;border-right:1px dashed var(--line-2);}
+  .dive .side.us{background:var(--card);}
+  .dive .side .lbl{font-family:var(--mono);font-size:13px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:12px;}
+  .dive .side.them .lbl{color:var(--ink-faint);}
+  .dive .side.us .lbl{color:var(--accent-ink);display:flex;align-items:center;gap:9px;}
+  .dive .side.us .lbl .sq{width:11px;height:11px;background:var(--accent);}
+  .dive .side p{font-size:17px;line-height:1.6;color:var(--ink-soft);margin-bottom:12px;}
+  .dive .side p:last-child{margin-bottom:0;}
+  .dive .side p b{color:var(--ink);font-weight:700;}
+  .dive .side.us p b{color:var(--accent-ink);}
+  .code{font-family:var(--mono);font-size:14px;background:var(--paper-2);padding:12px 14px;color:var(--ink-soft);line-height:1.5;margin-top:4px;white-space:pre-wrap;}
+  .dive .side.us .code{background:#211E1A;color:#E8E2D6;}
+  .dive .side.us .code b{color:#F3B59E;}
+
+  /* ---- build list ---- */
+  .built{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;}
+  .built .item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .built .item .ck{color:var(--accent);font-weight:800;font-family:var(--mono);flex:0 0 auto;font-size:17px;}
+  .built .item .tx{font-size:17px;line-height:1.5;}
+  .built .item .tx b{font-weight:800;color:var(--ink);}
+  .built .item .tx .src{font-family:var(--mono);font-size:13px;color:var(--ink-faint);display:block;margin-top:3px;}
+
+  /* ---- learned callout ---- */
+  .learned{background:var(--card);border:1px solid var(--line-2);border-left:5px solid var(--accent);padding:30px 34px;}
+  .learned h3{font-size:23px;font-weight:800;margin-bottom:8px;}
+  .learned .sub{font-size:17px;color:var(--ink-soft);margin-bottom:22px;}
+  .learned ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 36px;}
+  .learned li{font-size:16.5px;line-height:1.5;color:var(--ink-soft);padding-left:20px;position:relative;}
+  .learned li::before{content:"—";position:absolute;left:0;color:var(--accent);font-weight:700;}
+  .learned li b{color:var(--ink);font-weight:700;}
+
+  /* ---- closing ---- */
+  .closing{padding:64px 0 0;border-bottom:0;}
+  .closing .big{font-family:var(--zh);font-weight:900;font-size:46px;line-height:1.2;letter-spacing:-0.01em;margin-bottom:24px;}
+  .closing .big .hl{color:var(--accent);}
+  .closing p{font-size:21px;color:var(--ink-soft);max-width:1000px;line-height:1.6;}
+  .closing p b{color:var(--ink);font-weight:700;}
+  .foot{margin-top:48px;padding-top:22px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;font-family:var(--mono);font-size:14px;color:var(--ink-faint);letter-spacing:0.06em;text-transform:uppercase;}
+
+  @media (max-width:980px){
+    .wrap{padding:0 24px 80px;}
+    h1{font-size:44px;}
+    .thesis,.built,.learned ul{grid-template-columns:1fr;}
+    .dive .body{grid-template-columns:1fr;}
+    table{font-size:13px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="mark"><span class="sq"></span>VIN · TECHNICAL DOSSIER</div>
+    <div class="meta">Architecture Comparison · 2026.06</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker"><span class="sq"></span>Technical Comparison · 技術架構對照</div>
+    <h1>徹頭徹尾的重構，<br><span class="hl">不是換語言的轉譯</span>。</h1>
+    <p class="lede">
+      我們的 agent harness，與兩套個人型開源參考（<b>OpenClaw</b>、<b>Hermes</b>）逐項技術對照。
+      三套都是 agent harness，好的<b>機制</b>我們有借鏡；但它們是<b>個人單機助手</b>，我們是<b>多租戶 SaaS</b>——
+      身份、資料、計量、並發模型全部為「多租戶 × 企業 × serverless」從地基重新設計。
+    </p>
+    <div class="hero-meta">對照對象 · OpenClaw（TypeScript / Node，CLI + daemon）　Hermes（Python，CLI + gateway）　Pandora（TypeScript / Next.js on GCP serverless）</div>
+  </div>
+
+  <!-- THESIS -->
+  <section>
+    <div class="sec-head"><span class="sec-no">01</span><h2>一句話定調：機制可借鏡，形態必重寫</h2></div>
+    <div class="thesis">
+      <div class="tcard">
+        <div class="n">它們 · A</div>
+        <h3>個人單機助手</h3>
+        <p>一個<b>常駐程序</b>服務<b>一個主人</b>，跑在你自己的裝置上。身份靠「這台機器就是你」，狀態放全域沒問題。</p>
+      </div>
+      <div class="tcard">
+        <div class="n">我們 · B</div>
+        <h3>多租戶 SaaS</h3>
+        <p><b>無狀態 serverless</b>，一個服務同時切割服務<b>很多帳號</b>。身份必須隨每次呼叫帶、資料必須逐租戶隔離。</p>
+      </div>
+      <div class="tcard accent">
+        <div class="n">關鍵反證</div>
+        <h3>同語言，仍不照抄</h3>
+        <p>OpenClaw 本來就是 <b>TypeScript / Node</b>，跟我們同語言。若只是「轉譯」，照抄最省事——但它的單程序模型放到 serverless 會跨租戶污染，所以<b>整個重寫</b>。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section>
+    <div class="sec-head"><span class="sec-no">02</span><h2>逐項技術對照</h2></div>
+    <p class="sec-sub">同樣的維度，三套系統並排。「我們」這欄反白標出的，都是為多租戶從地基設計的決策。</p>
+    <table>
+      <thead>
+        <tr>
+          <th class="dim">維度</th>
+          <th class="ref">OpenClaw<span class="lang">TypeScript / Node</span></th>
+          <th class="ref">Hermes<span class="lang">Python</span></th>
+          <th class="ours">Pandora（我們）<span class="lang">TypeScript / Next.js · GCP</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dim">設計目標</td>
+          <td class="ref">個人 AI 助手（single-user assistant）</td>
+          <td class="ref">個人 AI 助手（$HERMES_HOME 一個主人）</td>
+          <td class="ours"><b>多租戶企業 SaaS</b>，依 UID 切割</td>
+        </tr>
+        <tr>
+          <td class="dim">執行 / 部署</td>
+          <td class="ref">CLI + daemon，<b style="color:inherit">常駐單程序</b>，跑在自己裝置</td>
+          <td class="ref">CLI + gateway，<b style="color:inherit">常駐單程序</b></td>
+          <td class="ours"><b>無狀態 serverless</b>（App Hosting，0–10 instances × 80 併發 / 容器）</td>
+        </tr>
+        <tr>
+          <td class="dim">身份模型</td>
+          <td class="ref"><span class="no">無 userId 欄位</span>　訊息 / session / state 皆無身份</td>
+          <td class="ref"><span class="no">user_id 為 nullable metadata</span>　只是本地標籤、非分割鍵</td>
+          <td class="ours">Firebase <b>UID = 全系統分割鍵 + 計費帳戶</b></td>
+        </tr>
+        <tr>
+          <td class="dim">狀態 / 並發</td>
+          <td class="ref">per-harness 狀態，<b style="color:inherit">明確假設單人、無併發</b></td>
+          <td class="ref">單一 state.db + ContextVar 切 home</td>
+          <td class="ours"><b>per-call context 承載身份</b>（無全域），支撐單容器 80 併發</td>
+        </tr>
+        <tr>
+          <td class="dim">Session 隔離</td>
+          <td class="ref">key = <span class="no">agentId:threadId（無 owner）</span></td>
+          <td class="ref">user_id 可選，<span class="no">無 row-level security</span></td>
+          <td class="ours">per-UID + <b>conversation ownership 驗證</b>（rules + runtime）</td>
+        </tr>
+        <tr>
+          <td class="dim">記憶儲存</td>
+          <td class="ref">本地 <b style="color:inherit">JSONL 檔</b>（DAG tree）</td>
+          <td class="ref">單一 <b style="color:inherit">SQLite state.db</b></td>
+          <td class="ours">Postgres + pgvector / Firestore，<b>per-UID 向量 + profile + skills</b></td>
+        </tr>
+        <tr>
+          <td class="dim">計量 / 配額</td>
+          <td class="ref">記錄 cost，<span class="no">無 quota、無 gate</span></td>
+          <td class="ref">記錄 cost，<span class="no">無 quota、無 gate</span></td>
+          <td class="ours"><b>token_usage + user_quota 四維月配額</b> + checkUserQuota gate（429 / 503）</td>
+        </tr>
+        <tr>
+          <td class="dim">工具系統</td>
+          <td class="ref">AgentTool + 140 extensions，<span class="no">不用 MCP</span>（自家 plugin）</td>
+          <td class="ref">registry.py + 完整 MCP client（mcp_tool.py）</td>
+          <td class="ours">AgentTool + <b>source / exposure 兩標記</b> + 官方 MCP SDK + materialize 邊界消毒</td>
+        </tr>
+        <tr>
+          <td class="dim">安全 / 權限</td>
+          <td class="ref"><span class="no">無資源級 ACL</span>，credential 全域，可讀本機檔</td>
+          <td class="ref"><span class="no">無資源級 ACL</span>，credential 全域共享</td>
+          <td class="ours"><b>input-guard + SSRF scan + toolPolicy + ownership + untrusted wrap</b></td>
+        </tr>
+        <tr>
+          <td class="dim">資料隔離邊界</td>
+          <td class="ref">作業系統家目錄（~/.openclaw）</td>
+          <td class="ref">單一 $HERMES_HOME 根目錄</td>
+          <td class="ours">雲端 DB <b>per-UID</b>（SQL WHERE user_id + Firestore rules）</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- DEEP DIVE -->
+  <section>
+    <div class="sec-head"><span class="sec-no">03</span><h2>三個決定性差異（放大看）</h2></div>
+    <p class="sec-sub">表格裡最關鍵的三列，攤開來看「為什麼不能照抄」。</p>
+
+    <div class="dive">
+      <div class="tag">差異 A · 執行模型</div>
+      <h3>常駐有狀態程序 ↔ 無狀態 serverless 函數</h3>
+      <div class="body">
+        <div class="side them">
+          <div class="lbl">OpenClaw / Hermes</div>
+          <p>一個常駐程序從開機活到關機，狀態（session、記憶、credential）就放在程序記憶體與本機檔案裡。一個程序＝一個人。</p>
+        </div>
+        <div class="side us">
+          <div class="lbl"><span class="sq"></span>Pandora</div>
+          <p>請求進來才活、回完就可能被回收；同一容器同時跑 <b>80 個併發請求</b>、橫向擴到多 instance。沒有「常駐記憶體」可以放身份。</p>
+          <div class="code">apphosting.yaml · maxInstances=10
+concurrency=80 · 無狀態容器</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dive">
+      <div class="tag">差異 B · 身份模型</div>
+      <h3>沒有 userId ↔ UID 是分割鍵</h3>
+      <div class="body">
+        <div class="side them">
+          <div class="lbl">OpenClaw / Hermes</div>
+          <p>OpenClaw 的訊息物件<b>根本沒有 userId 欄位</b>；Hermes 的 user_id 是可有可無的標籤，不參與授權、不是分割鍵。</p>
+          <div class="code">// openclaw createUserMessage()
+{ role:"user", content, timestamp }
+// ← 無 userId</div>
+        </div>
+        <div class="side us">
+          <div class="lbl"><span class="sq"></span>Pandora</div>
+          <p>身份隨<b>每一次工具呼叫</b>夾帶；工具內部一律讀 context.userId，<b>缺身份就 loud-fail</b>，絕不偷用全域舊值。</p>
+          <div class="code">execute(args, <b>context</b>)
+// 讀 context.userId，per-UID scope
+// 無 context → throw</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dive">
+      <div class="tag">差異 C · 並發安全（為什麼照抄會出事）</div>
+      <h3>單人無併發假設 ↔ per-call context 隔離</h3>
+      <div class="body">
+        <div class="side them">
+          <div class="lbl">OpenClaw / Hermes</div>
+          <p>因為假設「只有你一個人」，把身份放全域單例完全沒問題——這在單機是乾淨的設計，不是缺點。</p>
+        </div>
+        <div class="side us">
+          <div class="lbl"><span class="sq"></span>Pandora</div>
+          <p>同一容器 80 併發下，<b>全域身份會被後一個請求蓋掉前一個</b>，造成跨租戶污染。所以我們刪掉全域、改用 per-call context，並加<b>租戶隔離回歸測試</b>守住。</p>
+          <div class="code">smoke:tenant-isolation
+// 驗證無 fallback 全域路徑被走到</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILT FROM SCRATCH -->
+  <section>
+    <div class="sec-head"><span class="sec-no">04</span><h2>他們兩家都沒有、我們從零打造</h2></div>
+    <p class="sec-sub">這些是「多租戶企業 SaaS」的必要基礎設施——兩套個人型參考裡完全不存在，不是轉譯能生出來的。</p>
+    <div class="built">
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>per-UID token 計量表</b>　每輪 reserve → 即時 delta → finalize<span class="src">migrations/003-token-usage-metering.sql</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>per-UID 月配額 gate</b>　四維上限，超額回 429 / 503<span class="src">migrations/004 · 005 · checkUserQuota()</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>conversation ownership 驗證</b>　防跨帳號存取<span class="src">firestore.rules + verifyOwnership()</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>租戶隔離回歸測試</b>　守住身份不外溢<span class="src">tenant-isolation.smoke.ts</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>per-call AgentToolContext</b>　移除全域 currentUserId<span class="src">executor.ts · tools/*</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>per-UID 並行上限</b>　每帳號同時 run 數設限<span class="src">session-manager.ts · activeRuns map</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>外部內容消毒邊界</b>　untrusted wrap + SSRF 掃描<span class="src">security/external-content · content-scan</span></span></div>
+      <div class="item"><span class="ck">✓</span><span class="tx"><b>per-UID 記憶 / profile / 自訂技能</b>　逐租戶隔離<span class="src">memory/ltm · user-profile · skills</span></span></div>
+    </div>
+  </section>
+
+  <!-- LEARNED -->
+  <section>
+    <div class="sec-head"><span class="sec-no">05</span><h2>那我們向參考學了什麼？</h2></div>
+    <div class="learned">
+      <h3>學的是「好點子」，不是「整套搬過來」</h3>
+      <div class="sub">誠實說：好的機制我們有借鏡——但都重新實作、並改造成多租戶形態。學機制、不學形態。</div>
+      <ul>
+        <li><b>工具契約 + 動態註冊</b>的形態（一個 tool 抽象 + registry，三家共通）</li>
+        <li><b>ReAct 執行迴圈</b> + 並行工具呼叫的骨架</li>
+        <li><b>MCP 工具命名與 client 形態</b>（啟發 source / exposure 切分）</li>
+        <li><b>記憶「先召回、後寫入」</b>的回合紀律（pre-turn / post-turn）</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <div class="big">同樣是 agent harness，<br>但這是<span class="hl">不同物種</span>，不是同物種換語言。</div>
+    <p>
+      為 <b>GCP serverless 多租戶</b>從地基重寫——身份是<b>分割鍵</b>、狀態靠 <b>per-call context</b>、
+      計量 / 配額 / 權限是<b>第一公民</b>。參考專案給了好的起點與機制；
+      但要能當成<b>企業級 SaaS</b> 被很多帳號同時、安全地使用，是另一套從頭打造的工程。
+    </p>
+    <div class="foot">
+      <span>VIN · Technical Architecture Dossier</span>
+      <span>Refactor, not Translation</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

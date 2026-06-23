@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>P10 · Context · 餵料設計</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  .head{flex:0 0 auto;margin-top:38px;}
+  .head .kicker{margin-bottom:22px;}
+  .head .title{margin-bottom:20px;}
+
+  .canvas{flex:1;display:flex;flex-direction:column;margin:24px 0;}
+  .myths{flex:1;display:flex;flex-direction:column;}
+  .myth{flex:1;display:flex;align-items:center;border-top:1px solid var(--line);padding:0 6px;gap:24px;}
+  .myth:last-child{border-bottom:1px solid var(--line);}
+  .myth .m{flex:1;}
+  .myth .r{flex:1.3;}
+  .myth .k{font-family:var(--mono);font-size:14px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:7px;}
+  .myth .m .k{color:var(--ink-faint);}
+  .myth .r .k{color:var(--accent-ink);}
+  .myth .m .tx{font-size:23px;color:var(--ink-faint);line-height:1.4;}
+  .myth .r .tx{font-size:23px;color:var(--ink);font-weight:600;line-height:1.4;}
+  .myth .r .tx b{color:var(--accent-ink);font-weight:800;}
+  .myth .vs{flex:0 0 64px;text-align:center;color:var(--accent);font-family:var(--mono);font-size:26px;font-weight:700;}
+
+  .prio{flex:0 0 auto;margin-top:22px;background:var(--ink);color:var(--paper);padding:22px 32px;display:flex;align-items:center;gap:24px;}
+  .prio .tag{font-family:var(--mono);font-size:16px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);font-weight:700;border-right:1px solid rgba(245,243,238,0.25);padding-right:24px;flex:0 0 auto;}
+  .prio .seq{display:flex;align-items:center;gap:16px;font-size:22px;font-weight:700;flex-wrap:wrap;}
+  .prio .seq .ar{color:var(--accent);font-family:var(--mono);}
+
+  .ribbon{margin-bottom:18px;}
+  .note{margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="masthead">
+    <div class="mark"><span class="sq"></span>VIN · OPEN SOURCE AIOS</div>
+    <div class="meta">Context 脈絡 · Architecture Review</div>
+  </div>
+
+  <div class="head">
+    <div class="kicker"><span class="sq"></span>CONTEXT 脈絡 <span class="idx">/ 分析</span></div>
+    <h1 class="title">先看懂「餵料」機制，<span class="hl">才知道哪裡該修</span></h1>
+    <p class="lead">當 AI 答得不夠準，急著改參數常常改錯地方。這週把「資料怎麼挑進對話」的真實流程攤開，<b>破除三個常見誤解</b>。</p>
+  </div>
+
+  <div class="canvas">
+    <div class="myths">
+      <div class="myth">
+        <div class="m"><span class="k">以為</span><span class="tx">只挑前 10 篇就截斷，其餘丟掉。</span></div>
+        <div class="vs">&#8594;</div>
+        <div class="r"><span class="k">其實</span><span class="tx">前 10 只是<b>初篩</b>，不是最終餵給 AI 的量。</span></div>
+      </div>
+      <div class="myth">
+        <div class="m"><span class="k">以為</span><span class="tx">要對好幾萬篇文章重新排序。</span></div>
+        <div class="vs">&#8594;</div>
+        <div class="r"><span class="k">其實</span><span class="tx">只對約 <b>400 篇候選</b>做融合排序，不是全庫。</span></div>
+      </div>
+      <div class="myth">
+        <div class="m"><span class="k">以為</span><span class="tx">60 秒逾時卡在「摘要」階段。</span></div>
+        <div class="vs">&#8594;</div>
+        <div class="r"><span class="k">其實</span><span class="tx">逾時發生在<b>最終回答</b>那一輪，位置不同。</span></div>
+      </div>
+    </div>
+
+    <div class="prio">
+      <span class="tag">已落地 · PR #30</span>
+      <span class="seq">
+        <span>① 先修 fallback 鏈</span><span class="ar">&#8594;</span>
+        <span>② 補回中途的保護</span><span class="ar">&#8594;</span>
+        <span>③ 分層可調渲染</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <span class="tag">為什麼重要</span>
+    <span class="val">改對地方，比急著改更重要——<span class="hl">看懂機制後</span>，修正的投資報酬率才會高，也不會誤傷現有行為。</span>
+  </div>
+
+  <div class="note">
+    技術細節 · 候選以 <b>RRF 融合排序</b>。三項已於 <b>PR #30</b> 落地：分層可調渲染（前段詳 / 後段略，admin 可即時調）、中途 60K 上限 + 壓力 log、fallback 鏈修復。
+  </div>
+
+  <div class="footer">
+    <span>Context · Retrieval Pipeline</span>
+    <span class="pageno">10 / 17 &nbsp;·&nbsp; <b>CONTEXT</b></span>
+  </div>
+</div>
+</body>
+</html>

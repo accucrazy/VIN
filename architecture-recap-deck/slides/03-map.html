@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>P03 · 架構地圖</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  .head{flex:0 0 auto;margin-top:34px;}
+  .head .kicker{margin-bottom:20px;}
+  .head .lead{margin-top:14px;}
+
+  .canvas{flex:1;display:flex;flex-direction:column;margin:26px 0 18px;}
+  .rows{flex:1;display:flex;flex-direction:column;}
+  .row{
+    flex:1;display:flex;align-items:center;gap:34px;
+    border-top:1px solid var(--line);padding:0 6px;
+  }
+  .row:last-child{border-bottom:1px solid var(--line);}
+  .row .n{font-family:var(--mono);font-size:42px;font-weight:700;color:var(--accent);flex:0 0 78px;}
+  .row .nm{flex:0 0 340px;}
+  .row .nm .zh{font-size:32px;font-weight:900;color:var(--ink);line-height:1.1;}
+  .row .nm .en{font-family:var(--mono);font-size:15px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px;}
+  .row .ds{font-size:23px;color:var(--ink-soft);line-height:1.4;flex:1;}
+  .row .ds b{color:var(--ink);font-weight:700;}
+
+  .flow{
+    flex:0 0 auto;background:var(--ink);color:var(--paper);
+    padding:22px 34px;display:flex;align-items:center;gap:22px;
+  }
+  .flow .from{font-size:23px;font-weight:700;color:rgba(245,243,238,0.85);}
+  .flow .ar{color:var(--accent);font-family:var(--mono);font-size:30px;font-weight:700;}
+  .flow .to{font-size:25px;font-weight:800;}
+  .flow .to .hl{color:#F3B59E;}
+  .flow .pill{
+    margin-left:auto;font-family:var(--mono);font-size:15px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--accent);border:1px solid rgba(245,243,238,0.3);padding:8px 14px;
+  }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="masthead">
+    <div class="mark"><span class="sq"></span>VIN · OPEN SOURCE AIOS</div>
+    <div class="meta">Overview · Architecture Review</div>
+  </div>
+
+  <div class="head">
+    <div class="kicker"><span class="sq"></span>架構地圖 · The Map</div>
+    <h1 class="title">這週動到的<span class="hl">五個地基</span></h1>
+  </div>
+
+  <div class="canvas">
+    <div class="rows">
+      <div class="row">
+        <div class="n">01</div>
+        <div class="nm"><div class="zh">工具層</div><div class="en">Tool</div></div>
+        <div class="ds">工具契約正名、安全接上<b>外部工具</b>，加上 <b>Threads / Dcard</b> 兩條資料採集能力。</div>
+      </div>
+      <div class="row">
+        <div class="n">02</div>
+        <div class="nm"><div class="zh">工作階段</div><div class="en">Session</div></div>
+        <div class="ds">多帳號的<b>身份隔離</b>，加上每一輪的<b>用量計量與月配額</b>。</div>
+      </div>
+      <div class="row">
+        <div class="n">03</div>
+        <div class="nm"><div class="zh">脈絡</div><div class="en">Context</div></div>
+        <div class="ds">看懂「餵給 AI 的資料怎麼挑」的真實機制，定出<b>怎麼挑得更準</b>。</div>
+      </div>
+      <div class="row">
+        <div class="n">04</div>
+        <div class="nm"><div class="zh">記憶</div><div class="en">Memory</div></div>
+        <div class="ds">從「能寫能讀」，推向<b>有生命週期</b>（快照、淘汰、沉澱成學習）。</div>
+      </div>
+      <div class="row">
+        <div class="n">05</div>
+        <div class="nm"><div class="zh">技能</div><div class="en">Skill</div></div>
+        <div class="ds">把技能從散裝檔案，做成<b>可管理、可觀測的平台</b>。</div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <span class="from">五個地基</span>
+      <span class="ar">&#8594;</span>
+      <span class="to">全部匯流到 <span class="hl">Harness Control Plane</span>（本週也畫好了藍圖）</span>
+      <span class="pill">P16 · Future Work</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>The Map · Five Foundations</span>
+    <span class="pageno">03 / 17 &nbsp;·&nbsp; <b>MAP</b></span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  // TPC-AIOS local harness config. Values use ${VAR:-default} env substitution.
+  provider: {
+    default: "openai",
+    openai: { baseUrl: "${OPENAI_BASE_URL:-http://localhost:11434/v1}", model: "${OPENAI_MODEL:-qwen2.5}" },
+  },
+  memory: { backend: "sqlite", path: "${SQLITE_DB_PATH:-./harness.db}" },
+  // Single-user: identity is implicit. See src/cautionary/ for why this is a SEAM, not a constant.
+  identity: { userId: "local" },
+  agent: { default: "vin" },
+}

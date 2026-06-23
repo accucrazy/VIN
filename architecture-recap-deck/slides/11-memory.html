@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>P11 · Memory · 記憶生命週期</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+  .head{flex:0 0 auto;margin-top:38px;}
+  .head .kicker{margin-bottom:22px;}
+  .head .title{margin-bottom:20px;}
+
+  .canvas{flex:1;display:flex;align-items:stretch;margin:30px 0;}
+  .stage{
+    flex:1;border:1px solid var(--line);padding:26px 20px;
+    display:flex;flex-direction:column;
+  }
+  .stage.have{background:var(--card);border-color:var(--line-2);}
+  .stage.plan{border-style:dashed;background:transparent;}
+  .stage .badge{
+    font-family:var(--mono);font-size:13px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .stage.have .badge{color:var(--accent-ink);}
+  .stage.plan .badge{color:var(--ink-faint);}
+  .stage.have .badge .sq{width:11px;height:11px;background:var(--accent);display:inline-block;}
+  .stage .t{font-size:25px;font-weight:800;color:var(--ink);margin:14px 0 10px;line-height:1.15;}
+  .stage .d{font-size:17px;color:var(--ink-soft);line-height:1.5;}
+  .sep{flex:0 0 38px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:var(--mono);font-size:26px;font-weight:700;}
+
+  .ribbon{margin-bottom:22px;}
+  .note{margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="masthead">
+    <div class="mark"><span class="sq"></span>VIN · OPEN SOURCE AIOS</div>
+    <div class="meta">Memory 記憶 · Architecture Review</div>
+  </div>
+
+  <div class="head">
+    <div class="kicker"><span class="sq"></span>MEMORY 記憶 <span class="idx">/ 藍圖</span></div>
+    <h1 class="title">記憶從「能用」，走向<span class="hl">有生命週期</span></h1>
+    <p class="lead">AI 現在已經能自己寫筆記、也想得起來。缺的是<b>生命週期</b>——否則記憶會無限堆積，越長越鈍、越長越貴。</p>
+  </div>
+
+  <div class="canvas">
+    <div class="stage have">
+      <div class="badge"><span class="sq"></span>已有</div>
+      <div class="t">寫入</div>
+      <div class="d">AI 主動把重點記下來。</div>
+    </div>
+    <div class="sep">&#8594;</div>
+    <div class="stage have">
+      <div class="badge"><span class="sq"></span>已有</div>
+      <div class="t">召回</div>
+      <div class="d">需要時自動想起來。</div>
+    </div>
+    <div class="sep">&#8594;</div>
+    <div class="stage plan">
+      <div class="badge">藍圖</div>
+      <div class="t">快照</div>
+      <div class="d">記憶可版本化、可回溯，召回有上限可觀測。</div>
+    </div>
+    <div class="sep">&#8594;</div>
+    <div class="stage plan">
+      <div class="badge">藍圖</div>
+      <div class="t">淘汰</div>
+      <div class="d">過時的會被歸檔，不無限膨脹。</div>
+    </div>
+    <div class="sep">&#8594;</div>
+    <div class="stage plan">
+      <div class="badge">藍圖</div>
+      <div class="t">沉澱成學習</div>
+      <div class="d">成功的修正、使用者糾正，變成可重用的經驗。</div>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <span class="tag">為什麼重要</span>
+    <span class="val">記憶<span class="hl">不是越多越好</span>；有生命週期，才能讓系統越用越聰明，而不是越用越笨重。</span>
+  </div>
+
+  <div class="note">
+    技術細節 · 目標形狀已定義 —— bounded recall（召回有界且可觀測）、MemorySnapshot、淘汰/歸檔 lineage、把修正轉成 LearningCandidate；本頁為<b>架構藍圖</b>。
+  </div>
+
+  <div class="footer">
+    <span>Memory · Lifecycle &amp; Learning</span>
+    <span class="pageno">11 / 17 &nbsp;·&nbsp; <b>MEMORY</b></span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "name": "vin-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Web UI for VIN — standalone on-prem chat interface with visible tool calls and browser-backed web search.",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.13",
+    "lucide-react": "^1.21.0",
+    "next": "^16.2.9",
+    "puppeteer-core": "^23.11.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.3.0",
+    "remark-gfm": "^4.0.1",
+    "vega": "^6.2.0",
+    "vega-embed": "^7.1.0",
+    "vega-lite": "^6.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.7",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "10.4.19",
+    "eslint": "^10.5.0",
+    "eslint-config-next": "^16.2.9",
+    "postcss": "^8.5.15",
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.5"
+  }
+}

@@ -1,0 +1,62 @@
+# VIN-AIOS · one-command on-prem stack
+#
+#   docker compose up -d              # start Ollama
+#   ./scripts/setup-models.sh         # pull qwen2.5:14b + nomic-embed-text
+#   npm install && npm run start      # run VIN against the local stack
+#
+# This file intentionally only ships the *model runtime* (Ollama). VIN itself
+# is a TS module you import — running it as a long-lived service is up to you
+# (cron job, systemd, Cloud Run with private VPC, k8s, etc.).
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vin-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      # Keep models hot between requests so the agent loop doesn't pay reload cost.
+      - OLLAMA_KEEP_ALIVE=24h
+      # Allow VIN running in another container / host to reach this daemon.
+      - OLLAMA_HOST=0.0.0.0
+      # Increase context window default (per-model num_ctx still overrides).
+      - OLLAMA_NUM_PARALLEL=2
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # Uncomment if your host has an NVIDIA GPU and the NVIDIA Container Toolkit:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # Optional: run VIN as a long-lived service inside the same compose project.
+  # Uncomment after you've built a Dockerfile for the agent itself.
+  #
+  # vin:
+  #   build: .
+  #   container_name: vin-agent
+  #   restart: unless-stopped
+  #   depends_on:
+  #     ollama:
+  #       condition: service_healthy
+  #   environment:
+  #     - HARNESS_PROVIDER=ollama
+  #     - OLLAMA_BASE_URL=http://ollama:11434
+  #     - OLLAMA_MODEL=qwen2.5:14b
+  #     - EMBEDDING_MODEL=nomic-embed-text
+  #     - SQLITE_DB_PATH=/data/vin.db
+  #   volumes:
+  #     - vin-data:/data
+
+volumes:
+  ollama-data:
+  # vin-data:
