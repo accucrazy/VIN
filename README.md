@@ -11,6 +11,12 @@ It packages the **The Pocket Company Framework** into an open-source distributio
 
 ![The Pocket Company Framework](docs/assets/vin-framework.png)
 
+VIN is built with The Pocket Company and Turn Cloud / TSpace ecosystem in mind: the open-source cut is designed for teams that need local models, tool governance, and browser/computer-use style capabilities around real enterprise workflows.
+
+**中文簡介：**VIN 是一套以地端部署為優先的多代理 AIOS。它把 The Pocket Company 的協作式 agent harness、Turn Cloud（騰雲科技）與 TSpace 生態中的企業資料場景包裝成可開源、可自架、可替換模型的系統底座。預設支援 Ollama、本地模型、工具調用軌跡、網路搜尋、記憶與技能管理，適合不希望把企業資料預設送到雲端模型的團隊。
+
+Demo clip: [TurnCloud stock lookup with visible tool use](docs/assets/turncloud-stock-demo.mp4)
+
 ## Why VIN Exists
 
 Most agent frameworks quietly assume three things:

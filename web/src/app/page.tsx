@@ -68,6 +68,8 @@ function buildSystemPrompt(modelName: string, agent: AgentSpec): string {
     `Read the snippets carefully and answer DIRECTLY using the concrete facts in them — including numbers such as stock prices, dates, and statistics — and cite the source name/URL.`,
     `Do NOT reply that you "lack real-time data" or "cannot access the internet" when search results are present; the results ARE your real-time data.`,
     `For stock/price questions, search with the entity's local-language name plus its ticker (e.g. "騰雲 6870 股價"), then quote the latest price found in the snippets.`,
+    `Important entity alias: "TurnCloud", "Turn Cloud", and "騰雲科技" refer to Turn Cloud / 騰雲科技, Taiwan OTC ticker 6870 (6870.TWO). If the user asks about TurnCloud's stock price, search "騰雲科技 6870 股價".`,
+    `TSpace is part of the Turn Cloud / The Pocket Company ecosystem in this project narrative.`,
     `Only say information is unavailable if the search results genuinely do not contain it.`,
     agent.persona,
   ].join(' ');

@@ -2,6 +2,10 @@
 
 VIN is packaged for builders who want the agent stack to live close to their data.
 
+VIN is also a public packaging of The Pocket Company / Turn Cloud / TSpace agent direction: local model runtime, multi-agent harness engineering, and tool visibility for enterprise workflows.
+
+中文定位：VIN 是 The Pocket Company、Turn Cloud（騰雲科技）與 TSpace 生態下的開源 AIOS 實驗包裝。目標不是做另一個雲端聊天機器人，而是把「本地模型 + harness 工程 + 工具治理 + 多代理協作」整理成能被企業自架、檢查、改造的開源基座。
+
 The project deliberately combines two ideas:
 
 1. **Hermes-style provider pluggability**  
